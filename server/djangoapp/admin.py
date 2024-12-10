@@ -12,7 +12,8 @@ class CarModelInline(admin.TabularInline):
 class CarModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'car_make', 'type', 'year')  # Updated field names
     list_filter = ('type', 'year')  # Optional: Adds filters for these fields
-    search_fields = ('name', 'car_make__name')  # Allows searching by model name and car make name
+    search_fields = ('name', 
+                     'car_make__name')  # Allows searching by model name and car make name
 
 
 # CarMakeAdmin class with CarModelInline
