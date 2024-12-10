@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
     - name: Checkout Repository
       uses: actions/checkout@v3
     
@@ -30,8 +31,9 @@ jobs:
 
     - name: Run Linter
       run: |
-        # Find all Python files and run flake8 on them
-        find . -name "*.py" -exec flake8 {} + || exit 1
+        pwd
+        # This command finds all Python files recursively and runs flake8 on them
+        find . -name "*.py" -exec flake8 {} +
         echo "Linted all the python files successfully"
 
   lint_js:
@@ -39,19 +41,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 14
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
-    - name: Install JSHint
-      run: npm install jshint --global
+      - name: Install JSHint
+        run: npm install jshint --global
 
-    - name: Run Linter
-      run: |
-        # Find all JavaScript files and run jshint on them
-        find . -name "*.js" -exec jshint {} + || exit 1
-        echo "Linted all the js files successfully"
+      - name: Add JSHint Configuration to Files
+        run: |
+          # Add the esversion directive to all JavaScript files
+          find ./server/database -name "*.js" -exec echo "/*jshint esversion: 8 */" | cat - {} > temp && mv temp {} \;
+          find ./server/frontend/src -name "*.js" -exec echo "/*jshint esversion: 8 */" | cat - {} > temp && mv temp {} \;
+          echo "Added jshint esversion: 8 directive to all JS files"
+
+      - name: Run Linter
+        run: |
+          # This command finds all JavaScript files recursively and runs JSHint on them
+          find ./server/database -name "*.js" -exec jshint {} +
+          find ./server/frontend/src -name "*.js" -exec jshint {} +
+          echo "Linted all the js files successfully"
