@@ -31,7 +31,6 @@ jobs:
       - name: Run Linter
         run: |
           pwd
-          # This command finds all Python files recursively and runs flake8 on them
           find . -name "*.py" -exec flake8 {} +
           echo "Linted all the python files successfully"
 
@@ -46,44 +45,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: '16'  # Ensure you're using Node.js 16 or above
 
       - name: Install ESLint and plugins
         run: |
-          npm install eslint eslint-plugin-react --save-dev
-
-      - name: Set up ESLint configuration
-        run: |
-          # Create an ESLint config file if it doesn't exist
-          echo '{
-            "env": {
-              "browser": true,
-              "es2021": true
-            },
-            "extends": [
-              "eslint:recommended",
-              "plugin:react/recommended"
-            ],
-            "parserOptions": {
-              "ecmaFeatures": {
-                "jsx": true
-              },
-              "ecmaVersion": 12,
-              "sourceType": "module"
-            },
-            "plugins": [
-              "react"
-            ],
-            "rules": {
-              "react/react-in-jsx-scope": "off",
-              "react/prop-types": "off"
-            }
-          }' > .eslintrc.json
-          echo "Created ESLint configuration file"
+          npm install eslint@latest eslint-plugin-react --save-dev
 
       - name: Run ESLint Linter
         run: |
-          # Run ESLint on the JavaScript files
           npx eslint ./server/database ./server/frontend/src --ext .js,.jsx
           echo "Linted all the JS files successfully"
-
