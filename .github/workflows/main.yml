@@ -48,17 +48,42 @@ jobs:
         with:
           node-version: 14
 
-      - name: Install JSHint
-        run: npm install jshint --global
-
-      - name: Add JSHint Configuration to Files
+      - name: Install ESLint and plugins
         run: |
-          # Find all JavaScript files and prepend the JSHint directive
-          find ./server/database ./server/frontend/src -name "*.js" -exec sh -c 'echo "/*jshint esversion: 8 */" | cat - {} > temp && mv temp {}' \;
-          echo "Added JSHint esversion: 8 directive to all JS files"
+          npm install eslint eslint-plugin-react --save-dev
 
-      - name: Run Linter
+      - name: Set up ESLint configuration
         run: |
-          # Find and lint all JavaScript files
-          find ./server/database ./server/frontend/src -name "*.js" -exec jshint {} +
-          echo "Linted all the js files successfully"
+          # Create an ESLint config file if it doesn't exist
+          echo '{
+            "env": {
+              "browser": true,
+              "es2021": true
+            },
+            "extends": [
+              "eslint:recommended",
+              "plugin:react/recommended"
+            ],
+            "parserOptions": {
+              "ecmaFeatures": {
+                "jsx": true
+              },
+              "ecmaVersion": 12,
+              "sourceType": "module"
+            },
+            "plugins": [
+              "react"
+            ],
+            "rules": {
+              "react/react-in-jsx-scope": "off",
+              "react/prop-types": "off"
+            }
+          }' > .eslintrc.json
+          echo "Created ESLint configuration file"
+
+      - name: Run ESLint Linter
+        run: |
+          # Run ESLint on the JavaScript files
+          npx eslint ./server/database ./server/frontend/src --ext .js,.jsx
+          echo "Linted all the JS files successfully"
+
