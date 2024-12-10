@@ -45,7 +45,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Ensure you're using Node.js 16 or above
+          node-version: '16'
 
       - name: Install ESLint and plugins
         run: |
@@ -53,5 +53,5 @@ jobs:
 
       - name: Run ESLint Linter
         run: |
-          npx eslint ./server/database ./server/frontend/src --ext .js,.jsx
+          npx eslint './server/database/**/*.js' './server/frontend/src/**/*.js' './server/frontend/src/**/*.jsx'
           echo "Linted all the JS files successfully"
